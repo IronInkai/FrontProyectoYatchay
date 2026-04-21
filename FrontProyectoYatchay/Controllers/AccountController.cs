@@ -22,7 +22,7 @@ public class AccountController : Controller
         var client = _clientFactory.CreateClient("YatchayApi");
 
         // Enviamos el objeto al endpoint de tu API
-        var response = await client.PostAsJsonAsync("api/Usuarios/login", model);
+        var response = await client.PostAsJsonAsync("api/Auth/login", model);
 
         if (response.IsSuccessStatusCode)
         {
@@ -39,7 +39,7 @@ public class AccountController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        ViewBag.Error = "Credenciales incorrectas o error en el servidor.";
+        ViewBag.Error = "Correo o contraseña incorrectos.";
         return View(model);
     }
 
@@ -56,7 +56,7 @@ public class AccountController : Controller
         var client = _clientFactory.CreateClient("YatchayApi");
 
         //Enviamos los datos a la ruta /api/usuarios/registro
-        var response = await client.PostAsJsonAsync("api/Usuarios/registro", model);
+        var response = await client.PostAsJsonAsync("api/Auth/registro", model);
 
         if (response.IsSuccessStatusCode)
         {
