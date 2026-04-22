@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 public class AccountController : Controller
 {
     private readonly IHttpClientFactory _clientFactory;
+    private object errorData;
 
     public AccountController(IHttpClientFactory clientFactory)
     {
@@ -50,13 +51,12 @@ public class AccountController : Controller
     //POST: Account/Registro
     [HttpPost]
     public async Task<IActionResult> Registro(RegistroViewModel model)
-    { 
-        if(!ModelState.IsValid) return View(model);
+    {
+        if (!ModelState.IsValid) return View(model);
 
         var client = _clientFactory.CreateClient("YatchayApi");
 
-        //Enviamos los datos a la ruta /api/usuarios/registro
-        var response = await client.PostAsJsonAsync("api/Auth/registro", model);
+        var response = await client.PostAsJsonAsync("api/Auth/register", model);
 
         if (response.IsSuccessStatusCode)
         {
@@ -64,9 +64,14 @@ public class AccountController : Controller
             return RedirectToAction("Login");
         }
 
-        //Si la API devuelve un error (ej: correo duplicado), lo capturamos
-        var errorContent = await response.Content.ReadFromJsonAsync<dynamic>();
-        ViewBag.Error = errorContent?.mensaje ?? "Error al registrar usuario.";
+        var errorData = await response.Content.ReadFromJsonAsync<ApiResponse>();
+        ViewBag.Error = errorData?.Mensaje ?? "Error al registrar usuario.";
+
+        // En System.Text.Json, el dynamic se convierte en JsonElement
+        if (errorData?.Errores != null && errorData.Errores.Any())
+        {
+            ViewBag.ErrorDetail = errorData.Errores;
+        }
 
         return View(model);
     }

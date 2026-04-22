@@ -1,0 +1,39 @@
+﻿@model IEnumerable<FrontProyectoYatchay.Models.DecisionRequest>
+
+@{
+    ViewData["Title"] = "Guía de Simulación";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Simulación de Gestión Educativa</h1>
+            <hr />
+            <p class="lead text-muted italic">
+                "Estás por iniciar un entorno de aprendizaje dinámico donde cada elección cuenta.
+                A continuación, te enfrentarás a diversos escenarios críticos: analiza las opciones,
+                evalúa las consecuencias y selecciona la que consideres más acertada.
+                El éxito no solo depende del conocimiento, sino del criterio profesional."
+            </p>
+
+            <div class="card bg-light border-0 shadow-sm my-5">
+                <div class="card-body p-4">
+                    <h5 class="card-title text-primary">Instrucciones de la Simulación</h5>
+                    <ul class="text-start d-inline-block mt-3">
+                        <li>Cada fase presenta un desafío único basado en casos reales.</li>
+                        <li>Las decisiones son <strong>inmutables</strong>: una vez enviada, no podrás cambiarla.</li>
+                        <li>Recibirás retroalimentación inmediata después de cada elección.</li>
+                        <li>Tu puntaje final se calculará al completar las 10 fases.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <a asp-action="Jugar"
+               asp-route-idSession="@ViewBag.IdSession"
+               asp-route-fase="@ViewBag.FaseActual"
+               class="btn btn-primary btn-lg px-5 shadow">
+                Comenzar Simulación
+            </a>
+        </div>
+    </div>
+</div>
