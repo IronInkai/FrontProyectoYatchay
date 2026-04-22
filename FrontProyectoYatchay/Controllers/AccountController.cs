@@ -1,6 +1,9 @@
 ﻿using FrontProyectoYatchay.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Json;
+using System.Security.Claims;
 
 public class AccountController : Controller
 {
@@ -29,6 +32,18 @@ public class AccountController : Controller
         {
             // Leemos la respuesta exitosa usando tu LoginResponseDto
             var infoUsuario = await response.Content.ReadFromJsonAsync<UsuarioSesion>();
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, infoUsuario.Nombre),
+                new Claim(ClaimTypes.Email, model.Correo),
+                new Claim(ClaimTypes.Role, infoUsuario.NombreRol)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
 
             // Redirigir según el rol
             if (infoUsuario.NombreRol.ToLower() == "analista") 
