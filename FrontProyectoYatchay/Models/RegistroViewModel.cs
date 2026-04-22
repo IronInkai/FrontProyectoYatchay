@@ -22,6 +22,6 @@ namespace FrontProyectoYatchay.Models
         [StringLength(8, MinimumLength = 8, ErrorMessage = "El DNI debe tener 8 dígitos")]
         public string DNI { get; set; }
 
-        public int IdRol { get; set; } = 1; // 1 = Estudiante por defecto
+        public int IdRol { get; set; } = 1; //1 = Estudiante por defecto
     }
 }
