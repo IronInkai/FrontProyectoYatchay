@@ -2,19 +2,21 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Account/Login"; // A dónde mandarlo si no está logueado
-        options.AccessDeniedPath = "/Account/AccessDenied";
-    });
+builder.Services.AddHttpClient();
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient("YatchayApi", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7024/");
 });
+
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options => {
+        options.LoginPath = "/Account/Login";
+    });
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 

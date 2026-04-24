@@ -1,0 +1,40 @@
+﻿@model FrontProyectoYatchay.Models.FeedbackViewModel
+
+@{
+    ViewData["Title"] = "EnviarDecision";
+}
+
+<h1>EnviarDecision</h1>
+
+<div class="container mt-5 text-center">
+    <div class="card shadow border-0">
+        <div class="card-body p-5">
+            <h1 class="display-4">@Model.Titulo</h1>
+            <div class="my-4">
+                @if (Model.Resultado == "correcto" || Model.PuntajeObtenido > 0)
+                {
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                }
+                else
+                {
+                    <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 4rem;"></i>
+                }
+            </div>
+            <p class="lead">@Model.Texto</p>
+            <h3 class="text-primary">Puntaje obtenido: +@Model.PuntajeObtenido</h3>
+
+            <div class="mt-5">
+                @if (Model.PuedeSiguiente)
+                {
+                    <a asp-action="Jugar" asp-route-idSession="@ViewBag.IdSession" asp-route-fase="@( (int)ViewBag.FaseActual + 1 )" class="btn btn-primary btn-lg">
+                        Continuar a la siguiente fase
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="Finalizar" class="btn btn-success btn-lg">Ver Resultados Finales</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

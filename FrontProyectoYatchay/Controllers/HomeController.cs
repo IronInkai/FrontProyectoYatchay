@@ -1,6 +1,7 @@
-using System.Diagnostics;
 using FrontProyectoYatchay.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace FrontProyectoYatchay.Controllers
 {
@@ -12,6 +13,8 @@ namespace FrontProyectoYatchay.Controllers
         {
             _logger = logger;
         }
+
+     
 
         public IActionResult Index()
         {
@@ -28,5 +31,7 @@ namespace FrontProyectoYatchay.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        
     }
 }

@@ -28,35 +28,41 @@ public class AccountController : Controller
         // Enviamos el objeto al endpoint de tu API
         var response = await client.PostAsJsonAsync("api/Auth/login", model);
 
+        // En AccountController.cs -> Método Login
         if (response.IsSuccessStatusCode)
         {
-            // Leemos la respuesta exitosa usando tu LoginResponseDto
-            var infoUsuario = await response.Content.ReadFromJsonAsync<UsuarioSesion>();
+            // 1. Leemos el objeto completo (la caja que contiene 'datos')
+            var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<UsuarioSesion>>();
 
-            var claims = new List<Claim>
+            if (apiResponse != null && apiResponse.Datos != null)
             {
-                new Claim(ClaimTypes.Name, infoUsuario.Nombre),
-                new Claim(ClaimTypes.Email, model.Correo),
-                new Claim(ClaimTypes.Role, infoUsuario.NombreRol)
-            };
+                // 2. Sacamos la información de adentro de 'Datos'
+                var infoUsuario = apiResponse.Datos;
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, infoUsuario.Nombre),
+            new Claim(ClaimTypes.Role, infoUsuario.NombreRol),
+            // Ahora infoUsuario.IdUsuario valdrá 3, no 0
+            new Claim("IdUsuario", infoUsuario.IdUsuario.ToString())
+        };
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity));
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-            // Redirigir según el rol
-            if (infoUsuario.NombreRol.ToLower() == "analista") 
-            {
-                return RedirectToAction("Dashboard", "admin");
+                return RedirectToAction("Index", "Simulacion");
             }
-
-            // Aquí puedes leer el rol que devuelve tu SP para decidir a dónde mandarlo
-            return RedirectToAction("Index", "Home");
         }
 
         ViewBag.Error = "Correo o contraseña incorrectos.";
         return View(model);
+    }
+
+    
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction("Index", "Home");
     }
 
     //GET: Account/Registro
@@ -79,7 +85,7 @@ public class AccountController : Controller
             return RedirectToAction("Login");
         }
 
-        var errorData = await response.Content.ReadFromJsonAsync<ApiResponse>();
+        var errorData = await response.Content.ReadFromJsonAsync<ApiResponse<RegistroViewModel>>();
         ViewBag.Error = errorData?.Mensaje ?? "Error al registrar usuario.";
 
         // En System.Text.Json, el dynamic se convierte en JsonElement
