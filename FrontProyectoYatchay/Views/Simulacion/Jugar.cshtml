@@ -1,0 +1,37 @@
+﻿@model FrontProyectoYatchay.Models.SimulacionViewModel
+@using System.Text.Json
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-dark text-white p-4">
+            <h5 class="text-uppercase mb-0">Fase @Model.Fase</h5>
+            <h2 class="display-6">@Model.Titulo</h2>
+        </div>
+        <div class="card-body p-5">
+            <p class="lead mb-4">Analiza la situación y selecciona la mejor opción:</p>
+            <p class="lead">@Model.Contenido</p>
+            <form asp-action="EnviarDecision" method="post">
+                <input type="hidden" name="IdSession" value="@ViewBag.IdSession" />
+                <input type="hidden" name="IdContent" value="@Model.IdContent" />
+
+                <div class="list-group">
+                    @foreach (var opcion in Model.ListadoOpciones)
+                    {
+                        <button type="submit" name="OpcionElegida" value="@opcion.Id"
+                                class="list-group-item list-group-item-action">
+                            @opcion.Texto
+                        </button>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-foco:hover {
+        background-color: #f8f9fa;
+        transform: translateX(10px);
+        transition: 0.3s;
+    }
+</style>

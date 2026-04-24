@@ -1,8 +1,14 @@
-﻿@model IEnumerable<FrontProyectoYatchay.Models.DecisionRequest>
+﻿
 
 @{
     ViewData["Title"] = "Guía de Simulación";
+    int idSession = ViewBag.IdSession;
+    int fase = ViewBag.FaseActual;
 }
+
+<div class="alert alert-info">
+    Debug: ID Sesión es @idSession | Fase es @fase
+</div>
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -28,12 +34,12 @@
                 </div>
             </div>
 
-            <a asp-action="Jugar"
-               asp-route-idSession="@ViewBag.IdSession"
-               asp-route-fase="@ViewBag.FaseActual"
+            <a href="/Simulacion/Jugar?idSession=@idSession&fase=@fase"
                class="btn btn-primary btn-lg px-5 shadow">
                 Comenzar Simulación
             </a>
+
+           
         </div>
     </div>
 </div>
