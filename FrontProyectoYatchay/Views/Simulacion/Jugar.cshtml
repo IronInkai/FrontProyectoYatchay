@@ -10,15 +10,16 @@
         <div class="card-body p-5">
             <p class="lead mb-4">Analiza la situación y selecciona la mejor opción:</p>
             <p class="lead">@Model.Contenido</p>
-            <form asp-action="EnviarDecision" method="post">
-                <input type="hidden" name="IdSession" value="@ViewBag.IdSession" />
+            <form asp-action="EnviarDecision" asp-controller="Simulacion" method="post">
+                <input type="hidden" name="IdSession" value="@Model.IdSession" />
                 <input type="hidden" name="IdContent" value="@Model.IdContent" />
+                <input type="hidden" name="FaseActual" value="@Model.Fase" />
 
-                <div class="list-group">
+                <div class="list-group mt-4">
                     @foreach (var opcion in Model.ListadoOpciones)
                     {
                         <button type="submit" name="OpcionElegida" value="@opcion.Id"
-                                class="list-group-item list-group-item-action">
+                                class="list-group-item list-group-item-action border-primary hover-foco">
                             @opcion.Texto
                         </button>
                     }
