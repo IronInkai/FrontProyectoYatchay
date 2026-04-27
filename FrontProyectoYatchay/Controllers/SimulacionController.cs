@@ -60,7 +60,7 @@ namespace FrontProyectoYatchay.Controllers
             return View();
         }
 
-        [AllowAnonymous]
+        
         public async Task<IActionResult> Jugar(int idSession, int fase)
         {
             var client = _clientFactory.CreateClient("YatchayApi");
@@ -84,7 +84,7 @@ namespace FrontProyectoYatchay.Controllers
                     IdContent = datos.GetProperty("idContent").GetInt32(),
                     Fase = datos.GetProperty("fase").GetInt32(),
                     Titulo = datos.GetProperty("titulo").GetString() ?? "",
-                    Contenido = datos.GetProperty("tipo").GetString() ?? "", // O usa la propiedad que prefieras
+                    Contenido = "Selecciona la acción más adecuada para esta etapa de la simulación.",
                     ListadoOpciones = listaOpciones 
                 };
 
@@ -95,28 +95,40 @@ namespace FrontProyectoYatchay.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EnviarDecision(DecisionRequest request)
+        public async Task<IActionResult> EnviarDecision(int IdSession, int IdContent, int OpcionElegida, int FaseActual)
         {
             var client = _clientFactory.CreateClient("YatchayApi");
-            var response = await client.PostAsJsonAsync("api/Simulation/decide", request);
+
+            var decision = new
+            {
+                idSession = IdSession,
+                idContent = IdContent,
+                opcionElegida = OpcionElegida
+            };
+
+            var response = await client.PostAsJsonAsync("api/Simulation/decide", decision);
 
             if (response.IsSuccessStatusCode)
             {
-                var result = await response.Content.ReadFromJsonAsync<dynamic>();
+                var json = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonDocument>();
+                var datos = json.RootElement.GetProperty("datos");
 
-                var feedback = new FeedbackViewModel
+                bool puedeSiguiente = datos.TryGetProperty("puedeSiguiente", out var prop) && prop.GetBoolean();
+
+                if (puedeSiguiente)
                 {
-                    Titulo = result.datos.titulo,
-                    Texto = result.datos.texto,
-                    Resultado = result.datos.resultado,
-                    PuntajeObtenido = result.datos.puntajeObtenido,
-                    PuedeSiguiente = result.datos.puedeSiguiente
-                };
-
-                return View("EnviarDecision", feedback);
+                    int siguienteFase = FaseActual + 1;
+                    return RedirectToAction("Jugar", new { idSession = IdSession, fase = siguienteFase });
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
+            //var errorBody = await response.Content.ReadAsStringAsync();
+            //return Content($"Error: {errorBody} | Enviado IdContent: {IdContent}");
 
-            return BadRequest("Error al procesar la decisión.");
+            return RedirectToAction("Jugar", new { idSession = IdSession, fase = 1 });
         }
     }
 }

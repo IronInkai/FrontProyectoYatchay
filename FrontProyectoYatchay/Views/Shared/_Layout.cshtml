@@ -64,6 +64,24 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        window.watsonAssistantChatOptions = {
+            integrationID: "fc59871a-2521-45e9-8700-c0877859b34c",
+            region: "us-south",
+            serviceInstanceID: "5af6edf7-3c3d-4d71-be28-af8b166ddb0b",
+            onLoad: async (instance) => {
+                await instance.render();
+            },
+        };
+
+        setTimeout(function () {
+            const t = document.createElement("script");
+            t.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" +
+                    (window.watsonAssistantChatOptions.clientVersion || "latest") +
+                    "/WatsonAssistantChatEntry.js";
+            document.head.appendChild(t);
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

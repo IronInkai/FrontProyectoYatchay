@@ -31,24 +31,30 @@ public class AccountController : Controller
         // En AccountController.cs -> Método Login
         if (response.IsSuccessStatusCode)
         {
-            // 1. Leemos el objeto completo (la caja que contiene 'datos')
+            // Leemos el objeto completo (la caja que contiene 'datos')
             var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<UsuarioSesion>>();
 
             if (apiResponse != null && apiResponse.Datos != null)
             {
-                // 2. Sacamos la información de adentro de 'Datos'
+                //Sacamos la información de adentro de 'Datos'
                 var infoUsuario = apiResponse.Datos;
 
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, infoUsuario.Nombre),
-            new Claim(ClaimTypes.Role, infoUsuario.NombreRol),
-            // Ahora infoUsuario.IdUsuario valdrá 3, no 0
-            new Claim("IdUsuario", infoUsuario.IdUsuario.ToString())
-        };
+                    {
+                        new Claim(ClaimTypes.Name, infoUsuario.Nombre),
+                        new Claim(ClaimTypes.Role, infoUsuario.NombreRol),
+            
+                        new Claim("IdUsuario", infoUsuario.IdUsuario.ToString())
+                    };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                if (infoUsuario.NombreRol.Equals("analista", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Si es admin, lo mandamos al Dashboard
+                    return RedirectToAction("Dashboard", "Admin");
+                }
 
                 return RedirectToAction("Index", "Simulacion");
             }
@@ -57,8 +63,7 @@ public class AccountController : Controller
         ViewBag.Error = "Correo o contraseña incorrectos.";
         return View(model);
     }
-
-    
+        
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
