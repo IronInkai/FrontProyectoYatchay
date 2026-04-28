@@ -23,6 +23,9 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
+        if (!ModelState.IsValid)
+            return View(model);
+
         var client = _clientFactory.CreateClient("YatchayApi");
 
         // Enviamos el objeto al endpoint de tu API
@@ -52,7 +55,7 @@ public class AccountController : Controller
 
                 if (infoUsuario.NombreRol.Equals("analista", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Si es admin, lo mandamos al Dashboard
+                    // Si es admin, lo se va al Dashboard
                     return RedirectToAction("Dashboard", "Admin");
                 }
 
@@ -60,7 +63,7 @@ public class AccountController : Controller
             }
         }
 
-        ViewBag.Error = "Correo o contraseña incorrectos.";
+        ModelState.AddModelError(string.Empty, "Correo o contraseña incorrectos.");
         return View(model);
     }
         
@@ -90,13 +93,15 @@ public class AccountController : Controller
             return RedirectToAction("Login");
         }
 
-        var errorData = await response.Content.ReadFromJsonAsync<ApiResponse<RegistroViewModel>>();
-        ViewBag.Error = errorData?.Mensaje ?? "Error al registrar usuario.";
+        var errorData = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
 
-        // En System.Text.Json, el dynamic se convierte en JsonElement
-        if (errorData?.Errores != null && errorData.Errores.Any())
+        if (errorData != null && !string.IsNullOrEmpty(errorData.Mensaje))
         {
-            ViewBag.ErrorDetail = errorData.Errores;
+            ModelState.AddModelError(string.Empty, errorData.Mensaje);
+        }
+        else
+        {
+            ModelState.AddModelError(string.Empty, "Error al iniciar sesión.");
         }
 
         return View(model);

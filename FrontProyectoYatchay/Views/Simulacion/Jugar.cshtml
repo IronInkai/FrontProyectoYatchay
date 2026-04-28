@@ -1,38 +1,66 @@
 ﻿@model FrontProyectoYatchay.Models.SimulacionViewModel
-@using System.Text.Json
 
-<div class="container mt-5">
-    <div class="card shadow-lg border-0">
-        <div class="card-header bg-dark text-white p-4">
-            <h5 class="text-uppercase mb-0">Fase @Model.Fase</h5>
-            <h2 class="display-6">@Model.Titulo</h2>
-        </div>
-        <div class="card-body p-5">
-            <p class="lead mb-4">Analiza la situación y selecciona la mejor opción:</p>
-            <p class="lead">@Model.Contenido</p>
-            <form asp-action="EnviarDecision" asp-controller="Simulacion" method="post">
-                <input type="hidden" name="IdSession" value="@Model.IdSession" />
-                <input type="hidden" name="IdContent" value="@Model.IdContent" />
-                <input type="hidden" name="FaseActual" value="@Model.Fase" />
+<div class="container py-5">
 
-                <div class="list-group mt-4">
-                    @foreach (var opcion in Model.ListadoOpciones)
-                    {
-                        <button type="submit" name="OpcionElegida" value="@opcion.Id"
-                                class="list-group-item list-group-item-action border-primary hover-foco">
-                            @opcion.Texto
-                        </button>
-                    }
-                </div>
-            </form>
+    <!-- HEADER -->
+    <div class="mb-4 text-center">
+        <h6 class="text-muted text-uppercase">Fase @Model.Fase</h6>
+        <h2 class="fw-bold">@Model.Titulo</h2>
+    </div>
+
+    <!-- PROGRESO -->
+    <div class="mb-5">
+        <div class="progress" style="height: 10px;">
+            <div class="progress-bar" style="width: @(Model.Fase * 10)%"></div>
         </div>
     </div>
-</div>
 
-<style>
-    .hover-foco:hover {
-        background-color: #f8f9fa;
-        transform: translateX(10px);
-        transition: 0.3s;
-    }
-</style>
+    <!-- CONTENIDO -->
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-body p-4">
+            <p class="lead text-muted mb-3">
+                Analiza la situación:
+            </p>
+            <p class="fs-5">@Model.Contenido</p>
+        </div>
+    </div>
+
+    <!-- FORM -->
+    <form asp-action="EnviarDecision" asp-controller="Simulacion" method="post" id="formDecision">
+
+        <input type="hidden" name="IdSession" value="@Model.IdSession" />
+        <input type="hidden" name="IdContent" value="@Model.IdContent" />
+        <input type="hidden" name="FaseActual" value="@Model.Fase" />
+
+        <!-- OPCIONES COMO CARDS -->
+        <div class="row g-4">
+
+            @foreach (var opcion in Model.ListadoOpciones)
+            {
+                <div class="col-md-6">
+                    <div class="card opcion-card h-100 border-0 shadow-sm"
+                         onclick="seleccionarOpcion(@opcion.Id, this)">
+
+                        <div class="card-body">
+                            <p class="mb-0">@opcion.Texto</p>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        <!-- INPUT HIDDEN -->
+        <input type="hidden" name="OpcionElegida" id="opcionElegida" />
+
+        <!-- BOTÓN -->
+        <div class="text-center mt-5">
+            <button type="submit" class="btn btn-primary btn-lg px-5" id="btnEnviar" disabled>
+                Confirmar decisión
+            </button>
+        </div>
+
+    </form>
+
+</div>

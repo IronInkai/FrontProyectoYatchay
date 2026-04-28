@@ -13,24 +13,17 @@ namespace FrontProyectoYatchay.Controllers
             _clientFactory = clientFactory;
         }
 
-
-
-        // Acción para iniciar o retomar la simulación
         [Authorize]
         public async Task<IActionResult> Index()
         {
             var client = _clientFactory.CreateClient("YatchayApi");
-
-            // 1. Extraer el ID del Claim
             var idUsuarioClaim = User.FindFirst("IdUsuario")?.Value;
 
             if (string.IsNullOrEmpty(idUsuarioClaim) || idUsuarioClaim == "0")
             {
-                // Si llegamos aquí, el Login no guardó el ID correctamente
                 return Content("Error: El ID de usuario no existe en la sesión actual. Por favor, cierra sesión y vuelve a entrar.");
             }
 
-            // 2. Enviar a la API
             var response = await client.PostAsJsonAsync("api/Simulation/start", new { IdUsuario = int.Parse(idUsuarioClaim) });
 
             if (response.IsSuccessStatusCode)
@@ -40,16 +33,18 @@ namespace FrontProyectoYatchay.Controllers
 
                 return RedirectToAction("Introduccion", new
                 {
-                    idSession = datos.GetProperty("idSession").GetInt32(),
-                    faseActual = datos.GetProperty("faseActual").GetInt32()
+                    idSession = ObtenerInt(datos, "idSession"),
+                    faseActual = ObtenerInt(datos, "faseActual")
                 });
             }
-            else
+
+            return Content("Error al iniciar simulación");
+            /*else
             {
-                // Para ver si la API da error 400, veremos el porqué aquí
+                Para ver si la API da error 400, veremos el porqué aquí
                 var errorBody = await response.Content.ReadAsStringAsync();
                 return Content($"La API devolvió error {response.StatusCode}: {errorBody}");
-            }
+            }*/
         }
 
         // Acción para la frase introductoria
@@ -71,21 +66,19 @@ namespace FrontProyectoYatchay.Controllers
             {
                 var json = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonDocument>();
                 var datos = json.RootElement.GetProperty("datos");
-
-                // 1. Extraemos el string crudo de las opciones
+                                
                 string opcionesRaw = datos.GetProperty("opciones").GetString() ?? "[]";
-
                 var listaOpciones = System.Text.Json.JsonSerializer.Deserialize<List<OpcionViewModel>>(opcionesRaw,
                     new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();                 
 
                 var modelo = new SimulacionViewModel
                 {
                     IdSession = idSession,
-                    IdContent = datos.GetProperty("idContent").GetInt32(),
-                    Fase = datos.GetProperty("fase").GetInt32(),
+                    IdContent = ObtenerInt(datos, "idContent"),
+                    Fase = ObtenerInt(datos, "fase"),
                     Titulo = datos.GetProperty("titulo").GetString() ?? "",
                     Contenido = "Selecciona la acción más adecuada para esta etapa de la simulación.",
-                    ListadoOpciones = listaOpciones 
+                    ListadoOpciones = listaOpciones
                 };
 
                 return View(modelo);
@@ -130,5 +123,18 @@ namespace FrontProyectoYatchay.Controllers
 
             return RedirectToAction("Jugar", new { idSession = IdSession, fase = 1 });
         }
+        private int ObtenerInt(System.Text.Json.JsonElement elemento, string propiedad)
+        {
+            if (!elemento.TryGetProperty(propiedad, out var prop)) return 0;
+
+            if (prop.ValueKind == System.Text.Json.JsonValueKind.Number)
+            {
+                return prop.GetInt32();
+            }
+            // Si es un string "123", lo convierte a número 123
+            string valorTexto = prop.GetString() ?? "0";
+            return int.TryParse(valorTexto, out int resultado) ? resultado : 0;
+        }
+
     }
 }

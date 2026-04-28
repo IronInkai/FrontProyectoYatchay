@@ -1,8 +1,121 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+
+    <!-- HERO SECTION -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold">
+                Simulador de Marketing Estratégico
+            </h1>
+            <p class="lead mt-3">
+                Toma decisiones como un consultor real y analiza el comportamiento del cliente
+                en escenarios complejos del mercado peruano.
+            </p>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-primary btn-lg mt-3"
+                   asp-controller="Simulacion" asp-action="Index">
+                    Iniciar Simulación
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-success btn-lg mt-3"
+                   asp-controller="Account" asp-action="Login">
+                    Iniciar Sesión para comenzar
+                </a>
+            }
+        </div>
+
+        <div class="col-md-6 text-center">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                 class="img-fluid"
+                 style="max-height: 300px;" />
+        </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="row text-center mb-5">
+        <h2 class="mb-4">¿Qué aprenderás?</h2>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h5>🧠 Análisis del Cliente</h5>
+                <p>
+                    Comprende cómo los estímulos, creencias y decisiones
+                    afectan el comportamiento del consumidor.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h5>📊 Toma de Decisiones</h5>
+                <p>
+                    Elige herramientas de investigación y evalúa su impacto
+                    en los resultados del negocio.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h5>🎯 Estrategia de Marketing</h5>
+                <p>
+                    Define buyer personas y posicionamiento para resolver
+                    problemas reales de mercado.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="row mb-5">
+        <h2 class="text-center mb-4">¿Cómo funciona?</h2>
+
+        <div class="col-md-3 text-center">
+            <h4>1</h4>
+            <p>Analiza el problema del cliente</p>
+        </div>
+
+        <div class="col-md-3 text-center">
+            <h4>2</h4>
+            <p>Elige herramientas de investigación</p>
+        </div>
+
+        <div class="col-md-3 text-center">
+            <h4>3</h4>
+            <p>Define el buyer persona</p>
+        </div>
+
+        <div class="col-md-3 text-center">
+            <h4>4</h4>
+            <p>Propón una estrategia de posicionamiento</p>
+        </div>
+    </div>
+
+    <!-- CALL TO ACTION FINAL -->
+    <div class="text-center mb-5">
+        <h3>¿Listo para poner a prueba tu pensamiento estratégico?</h3>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a class="btn btn-primary btn-lg mt-3"
+               asp-controller="Simulacion" asp-action="Index">
+                Empezar ahora
+            </a>
+        }
+        else
+        {
+            <a class="btn btn-success btn-lg mt-3"
+               asp-controller="Account" asp-action="Registro">
+                Crear cuenta
+            </a>
+        }
+    </div>
+
 </div>

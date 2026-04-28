@@ -18,5 +18,76 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: #f5f7fa;
+    background: linear-gradient(135deg, #f5f7fa, #e4ecf7);
+}
+
+.card {
+    border-radius: 14px;
+}
+
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+}
+
+h1, h2, h3 {
+    color: #2c3e50;
+}
+
+.navbar-brand {
+    letter-spacing: 1px;
+}
+
+footer {
+    font-size: 0.9rem;
+}
+
+.dropdown-menu {
+    border-radius: 10px;
+}
+
+html, body {
+    height: 100%;
+}
+
+.form-control {
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.btn-primary {
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 500;
+}
+
+.btn-success {
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 500;
+}
+
+.opcion-card {
+    cursor: pointer;
+    border-radius: 14px;
+    transition: all 0.25s ease;
+}
+
+    .opcion-card:hover {
+        transform: translateY(-5px);
+        background-color: #f8f9fa;
+    }
+
+    .opcion-card.selected {
+        border: 2px solid #0d6efd;
+        background-color: #e7f1ff;
+    }
+
+.progress {
+    border-radius: 10px;
+}
+
+.progress-bar {
+    border-radius: 10px;
 }
