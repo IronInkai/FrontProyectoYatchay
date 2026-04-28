@@ -1,69 +1,134 @@
-﻿
-
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FrontProyectoYatchay</title>
+    <title>@ViewData["Title"] - Yachay Tech Simulator</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/FrontProyectoYatchay.styles.css" asp-append-version="true" />
 </head>
-<body>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- NAVBAR -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FrontProyectoYatchay</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+            <div class="container">
+
+                <!-- LOGO -->
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                    Yachay Tech
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+
+                    <!-- LEFT MENU -->
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Inicio</a>
+                        </li>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Simulacion" asp-action="Index">
+                                    Simulación
+                                </a>
+                            </li>
+                        }
+                    </ul>
+
+                    <!-- RIGHT MENU -->
                     <ul class="navbar-nav">
+
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                    Bienvenido, @User.Identity.Name
+                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                    👤 @User.Identity.Name
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Simulacion" asp-action="Index">Introduccion</a>
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-controller="Simulacion" asp-action="Index">
+                                            Ir a simulación
+                                        </a>
                                     </li>
+
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">Cerrar Sesión</a></li>
+
+                                    <li>
+                                        <a class="dropdown-item text-danger"
+                                           asp-controller="Account" asp-action="Logout">
+                                            Cerrar sesión
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Login">Iniciar Sesión</a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">
+                                    Iniciar sesión
+                                </a>
                             </li>
-                            <li>
-                                <a class="nav-link" asp-controller="Account" asp-action="Registro">Registrase</a>
+
+                            <li class="nav-item">
+                                <a class="btn btn-primary ms-2"
+                                   asp-controller="Account" asp-action="Registro">
+                                    Registrarse
+                                </a>
                             </li>
                         }
+
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - FrontProyectoYatchay - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- MAIN CONTENT -->
+    <main class="flex-fill">
+        <div class="container py-4">
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark text-light">
+        <div class="container py-4">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Yachay Tech Simulator</h5>
+                    <p class="small">
+                        Plataforma educativa para el desarrollo de habilidades
+                        en análisis de marketing y toma de decisiones estratégicas.
+                    </p>
+                </div>
+
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-1">&copy; 2026</p>
+                    <p class="small">Desarrollado para formación académica</p>
+                </div>
+            </div>
+
         </div>
     </footer>
+
+    <!-- SCRIPTS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js"></script>
+
+    <!-- WATSON CHAT -->
     <script>
         window.watsonAssistantChatOptions = {
             integrationID: "fc59871a-2521-45e9-8700-c0877859b34c",
@@ -77,11 +142,13 @@
         setTimeout(function () {
             const t = document.createElement("script");
             t.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" +
-                    (window.watsonAssistantChatOptions.clientVersion || "latest") +
-                    "/WatsonAssistantChatEntry.js";
+                (window.watsonAssistantChatOptions.clientVersion || "latest") +
+                "/WatsonAssistantChatEntry.js";
             document.head.appendChild(t);
         });
     </script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

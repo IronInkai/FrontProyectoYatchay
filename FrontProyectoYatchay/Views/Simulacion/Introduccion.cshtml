@@ -1,43 +1,93 @@
-﻿
-
-@{
+﻿@{
     ViewData["Title"] = "Guía de Simulación";
     int idSession = ViewBag.IdSession;
     int fase = ViewBag.FaseActual;
 }
 
-<div class="alert alert-info">
-    Debug: ID Sesión es @idSession | Fase es @fase
-</div>
+<div class="container py-5">
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h1 class="display-4 mb-4">Simulación de Gestión Educativa</h1>
-            <hr />
-            <p class="lead text-muted italic">
-                "Estás por iniciar un entorno de aprendizaje dinámico donde cada elección cuenta.
-                A continuación, te enfrentarás a diversos escenarios críticos: analiza las opciones,
-                evalúa las consecuencias y selecciona la que consideres más acertada.
-                El éxito no solo depende del conocimiento, sino del criterio profesional."
-            </p>
+    <!-- HERO -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Simulación de Marketing Estratégico</h1>
+        <p class="lead text-muted mt-3">
+            Enfréntate a decisiones reales y desarrolla tu criterio como consultor.
+        </p>
+    </div>
 
-            <div class="card bg-light border-0 shadow-sm my-5">
-                <div class="card-body p-4">
-                    <h5 class="card-title text-primary">Instrucciones de la Simulación</h5>
-                    <ul class="text-start d-inline-block mt-3">
-                        <li>Cada fase presenta un desafío único basado en casos reales.</li>
-                        <li>Las decisiones son <strong>inmutables</strong>: una vez enviada, no podrás cambiarla.</li>
-                        <li>Recibirás retroalimentación inmediata después de cada elección.</li>
-                        <li>Tu puntaje final se calculará al completar las 10 fases.</li>
-                    </ul>
-                </div>
+    <!-- FRASE -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm p-4 bg-light">
+                <p class="mb-0 text-center fst-italic text-muted">
+                    "Estás por iniciar un entorno de aprendizaje dinámico donde cada elección cuenta.
+                    Analiza, evalúa y decide con criterio estratégico."
+                </p>
             </div>
-
-            <a href="/Simulacion/Jugar?idSession=@idSession&fase=@fase"
-               class="btn btn-primary btn-lg px-5 shadow">
-                Comenzar Simulación
-            </a>           
         </div>
     </div>
+
+    <!-- INSTRUCCIONES -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+
+            <div class="card shadow-lg border-0">
+
+                <div class="card-body p-4">
+
+                    <h5 class="text-primary fw-bold mb-3 text-center">
+                        📘 ¿Cómo funciona la simulación?
+                    </h5>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            🧩 Cada fase presenta un desafío basado en un caso real.
+                        </li>
+                        <li class="list-group-item">
+                            ⚠️ Las decisiones son <strong>irreversibles</strong>.
+                        </li>
+                        <li class="list-group-item">
+                            💬 Recibirás retroalimentación después de cada elección.
+                        </li>
+                        <li class="list-group-item">
+                            🎯 Tu puntaje final se calculará al completar todas las fases.
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- PROGRESO -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-6 text-center">
+
+            <div class="card border-0 shadow-sm p-3">
+                <small class="text-muted">Estado actual</small>
+                <h5 class="fw-bold">Fase @fase</h5>
+
+                <div class="progress mt-3" style="height: 10px;">
+                    <div class="progress-bar"
+                         role="progressbar"
+                         style="width: @(fase * 10)%;">
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTÓN -->
+    <div class="text-center">
+
+        <a href="/Simulacion/Jugar?idSession=@idSession&fase=@fase"
+           class="btn btn-primary btn-lg px-5 py-3 shadow">
+            🚀 Comenzar Simulación
+        </a>
+
+    </div>
+
 </div>

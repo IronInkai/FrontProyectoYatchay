@@ -4,27 +4,72 @@
     ViewData["Title"] = "Login";
 }
 
-<h1>Login</h1>
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 80vh;">
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <h2 class="text-center">Iniciar Sesión</h2>
-            <form asp-action="Login" method="post">
-                <div class="form-group mb-3">
-                    <label>Correo Institucional</label>
-                    <input asp-for="Correo" class="form-control" placeholder="i2022...@@cibertec.edu.pe" required />
+    <div class="row w-100 justify-content-center">
+
+        <div class="col-md-5 col-lg-4">
+
+            <div class="card shadow-lg border-0 p-4">
+
+                <!-- LOGO / TITULO -->
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">Yachay Tech</h2>
+                    <p class="text-muted mb-0">Simulador de Marketing</p>
                 </div>
-                <div class="form-group mb-3">
-                    <label>Contraseña</label>
-                    <input asp-for="Contrasena" type="password" class="form-control" required />
+
+                <h5 class="text-center mb-4">Iniciar Sesión</h5>
+
+                @if (ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+                }
+
+                @if (TempData["MensajeExito"] != null)
+                {
+                    <div class="alert alert-success text-center">
+                        @TempData["MensajeExito"]
+                    </div>
+                }
+
+                <!-- FORM -->
+                <form asp-action="Login" method="post">
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Correo Institucional</label>
+                        <input asp-for="Correo"
+                               class="form-control"
+                               placeholder="Ej.: i202212416@cibertec.edu.pe"
+                               required />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input asp-for="Contrasena"
+                               type="password"
+                               class="form-control"
+                               required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-2">
+                        Entrar
+                    </button>
+
+                </form>
+
+                <!-- FOOTER LOGIN -->
+                <div class="text-center mt-4">
+                    <small class="text-muted">
+                        ¿No tienes cuenta?
+                        <a asp-controller="Account" asp-action="Registro">
+                            Regístrate aquí
+                        </a>
+                    </small>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Entrar</button>
-            </form>
-            @if (ViewBag.Error != null)
-            {
-                <div class="alert alert-danger mt-3">@ViewBag.Error</div>
-            }
+
+            </div>
+
         </div>
+
     </div>
 </div>
