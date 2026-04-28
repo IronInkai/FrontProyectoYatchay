@@ -82,12 +82,11 @@
 
     <!-- BOTÓN -->
     <div class="text-center">
-
-        <a href="/Simulacion/Jugar?idSession=@idSession&fase=@fase"
+        @* Si la fase es 0, forzamos a que empiece en la 1 *@
+        <a href="/Simulacion/Jugar?idSession=@idSession&fase=@(fase == 0 ? 1 : fase)"
            class="btn btn-primary btn-lg px-5 py-3 shadow">
             🚀 Comenzar Simulación
         </a>
-
     </div>
 
 </div>

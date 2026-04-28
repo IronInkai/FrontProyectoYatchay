@@ -1,4 +1,6 @@
-﻿namespace FrontProyectoYatchay.Models
+﻿using System.Text.Json.Serialization;
+
+namespace FrontProyectoYatchay.Models
 {
     // Para mostrar la pregunta actual
     public class SimulacionViewModel
@@ -13,7 +15,10 @@
 
     public class OpcionViewModel
     {
+        [JsonPropertyName("id_option")]
         public int Id { get; set; }
+
+        [JsonPropertyName("texto")]
         public string Texto { get; set; } = string.Empty;
     }
 }
