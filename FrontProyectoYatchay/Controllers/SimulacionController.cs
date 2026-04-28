@@ -1,6 +1,7 @@
 ﻿using FrontProyectoYatchay.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace FrontProyectoYatchay.Controllers
 {
@@ -38,16 +39,9 @@ namespace FrontProyectoYatchay.Controllers
                 });
             }
 
-            return Content("Error al iniciar simulación");
-            /*else
-            {
-                Para ver si la API da error 400, veremos el porqué aquí
-                var errorBody = await response.Content.ReadAsStringAsync();
-                return Content($"La API devolvió error {response.StatusCode}: {errorBody}");
-            }*/
+            return Content("Error al iniciar simulación");    
         }
 
-        // Acción para la frase introductoria
         public IActionResult Introduccion(int idSession, int faseActual)
         {
             ViewBag.IdSession = idSession;
@@ -58,18 +52,19 @@ namespace FrontProyectoYatchay.Controllers
         
         public async Task<IActionResult> Jugar(int idSession, int fase)
         {
-            var client = _clientFactory.CreateClient("YatchayApi");
+            int idABuscar = (fase <= 0) ? 1 : fase;
 
-            var response = await client.GetAsync($"api/Simulation/content/{idSession}/{fase}");
+            var client = _clientFactory.CreateClient("YatchayApi");
+            var response = await client.GetAsync($"api/Simulation/content/{idSession}/{idABuscar}");
 
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonDocument>();
                 var datos = json.RootElement.GetProperty("datos");
-                                
-                string opcionesRaw = datos.GetProperty("opciones").GetString() ?? "[]";
+
+                string opcionesRaw = datos.GetProperty("opciones").GetRawText();
                 var listaOpciones = System.Text.Json.JsonSerializer.Deserialize<List<OpcionViewModel>>(opcionesRaw,
-                    new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();                 
+                    new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
 
                 var modelo = new SimulacionViewModel
                 {
@@ -96,13 +91,14 @@ namespace FrontProyectoYatchay.Controllers
             {
                 idSession = IdSession,
                 idContent = IdContent,
-                opcionElegida = OpcionElegida
+                idOption = OpcionElegida
             };
 
             var response = await client.PostAsJsonAsync("api/Simulation/decide", decision);
 
             if (response.IsSuccessStatusCode)
             {
+
                 var json = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonDocument>();
                 var datos = json.RootElement.GetProperty("datos");
 
@@ -118,11 +114,13 @@ namespace FrontProyectoYatchay.Controllers
                     return RedirectToAction("Index", "Home");
                 }
             }
-            //var errorBody = await response.Content.ReadAsStringAsync();
-            //return Content($"Error: {errorBody} | Enviado IdContent: {IdContent}");
 
-            return RedirectToAction("Jugar", new { idSession = IdSession, fase = 1 });
+            //var errorMsg = await response.Content.ReadAsStringAsync();
+           //return Content($"Error de la API: {errorMsg}");
+
+            return RedirectToAction("Jugar", new { idSession = IdSession, fase = FaseActual });
         }
+
         private int ObtenerInt(System.Text.Json.JsonElement elemento, string propiedad)
         {
             if (!elemento.TryGetProperty(propiedad, out var prop)) return 0;
@@ -131,7 +129,6 @@ namespace FrontProyectoYatchay.Controllers
             {
                 return prop.GetInt32();
             }
-            // Si es un string "123", lo convierte a número 123
             string valorTexto = prop.GetString() ?? "0";
             return int.TryParse(valorTexto, out int resultado) ? resultado : 0;
         }

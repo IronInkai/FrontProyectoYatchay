@@ -30,21 +30,22 @@
 
         <input type="hidden" name="IdSession" value="@Model.IdSession" />
         <input type="hidden" name="IdContent" value="@Model.IdContent" />
-        <input type="hidden" name="FaseActual" value="@Model.Fase" />
+        <input type="hidden" name="FaseActual" value="@Model.IdContent" />
+    
 
         <!-- OPCIONES COMO CARDS -->
         <div class="row g-4">
 
             @foreach (var opcion in Model.ListadoOpciones)
             {
-                <div class="col-md-6">
-                    <div class="card opcion-card h-100 border-0 shadow-sm"
-                         onclick="seleccionarOpcion(@opcion.Id, this)">
-
+                <div class="col-md-6 mb-3">
+                    @* IMPORTANTE: Usa el nombre exacto de la propiedad del ID en tu ViewModel (ej. IdOption) *@
+                    <div class="card opcion-card h-100 shadow-sm border-2"
+                         onclick="seleccionarOpcion(@opcion.Id, this)"
+                         style="cursor: pointer;">
                         <div class="card-body">
-                            <p class="mb-0">@opcion.Texto</p>
+                            <p class="card-text">@opcion.Texto</p>
                         </div>
-
                     </div>
                 </div>
             }
@@ -52,7 +53,7 @@
         </div>
 
         <!-- INPUT HIDDEN -->
-        <input type="hidden" name="OpcionElegida" id="opcionElegida" />
+        <input type="hidden" name="OpcionElegida" id="opcionElegida" value="0" />
 
         <!-- BOTÓN -->
         <div class="text-center mt-5">
